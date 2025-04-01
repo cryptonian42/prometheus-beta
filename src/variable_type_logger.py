@@ -1,5 +1,8 @@
 import logging
 
+# Configure a logger that can be captured in tests
+logger = logging.getLogger(__name__)
+
 def log_variable_type(variable):
     """
     Log the type of a given variable with an informative message.
@@ -16,11 +19,11 @@ def log_variable_type(variable):
         >>> log_variable_type([1, 2, 3])
     """
     if variable is None:
-        logging.info("Variable type: NoneType")
+        logger.info("Variable type: NoneType")
         return "NoneType"
     
     var_type = type(variable).__name__
     var_repr = repr(variable)
     
-    logging.info(f"Variable type: {var_type}, Value: {var_repr}")
+    logger.info(f"Variable type: {var_type}, Value: {var_repr}")
     return var_type
