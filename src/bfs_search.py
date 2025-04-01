@@ -49,7 +49,7 @@ def breadth_first_search(graph: Dict[Any, List[Any]],
         if visit_fn and visit_fn(current):
             break
 
-        # Check if goal is reached
+        # Check if goal is reached and stop the search
         if current == goal:
             break
 
@@ -57,5 +57,9 @@ def breadth_first_search(graph: Dict[Any, List[Any]],
         for neighbor in graph.get(current, []):
             if neighbor not in visited:
                 queue.append(neighbor)
+
+        # If goal is not None and goal is in queue, break to stop further exploration
+        if goal is not None and goal in queue:
+            break
 
     return traversal_order
