@@ -56,10 +56,6 @@ def breadth_first_search(graph: Dict[Any, List[Any]],
         # Add unvisited neighbors to queue
         for neighbor in graph.get(current, []):
             if neighbor not in visited:
-                # Add goal to queue early if it's a neighbor
-                if goal and neighbor == goal:
-                    queue.append(neighbor)
-                    break
                 queue.append(neighbor)
 
     return traversal_order
