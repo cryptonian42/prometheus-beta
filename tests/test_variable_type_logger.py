@@ -1,15 +1,21 @@
 import pytest
 import logging
 import io
-import logging
 
 from src.variable_type_logger import log_variable_type
 
-def test_log_variable_type_primitive_types():
-    # Capture log output
-    log_capture = io.StringIO()
-    logging.basicConfig(stream=log_capture, level=logging.INFO)
+@pytest.fixture
+def log_capture():
+    # Create a StringIO object to capture log messages
+    capture = io.StringIO()
+    
+    # Configure logging to use the capture stream
+    logging.basicConfig(stream=capture, level=logging.INFO, 
+                        format='%(message)s')
+    
+    return capture
 
+def test_log_variable_type_primitive_types(log_capture):
     # Test integer
     result = log_variable_type(42)
     assert result == 'int'
@@ -36,11 +42,7 @@ def test_log_variable_type_primitive_types():
     log_output = log_capture.getvalue()
     assert 'Variable type: float, Value: 3.14' in log_output
 
-def test_log_variable_type_complex_types():
-    # Capture log output
-    log_capture = io.StringIO()
-    logging.basicConfig(stream=log_capture, level=logging.INFO)
-
+def test_log_variable_type_complex_types(log_capture):
     # Test list
     result = log_variable_type([1, 2, 3])
     assert result == 'list'
@@ -57,11 +59,7 @@ def test_log_variable_type_complex_types():
     log_output = log_capture.getvalue()
     assert 'Variable type: dict, Value: {\'a\': 1, \'b\': 2}' in log_output
 
-def test_log_variable_type_none():
-    # Capture log output
-    log_capture = io.StringIO()
-    logging.basicConfig(stream=log_capture, level=logging.INFO)
-
+def test_log_variable_type_none(log_capture):
     # Test None
     result = log_variable_type(None)
     assert result == 'NoneType'
