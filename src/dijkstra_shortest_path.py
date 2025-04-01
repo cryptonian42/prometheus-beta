@@ -46,10 +46,14 @@ def dijkstra_shortest_path(graph: Dict[str, Dict[str, int]], start: str, end: st
         # If we've reached the end node, reconstruct and return the path
         if current_node == end:
             path = []
-            while current_node:
-                path.append(current_node)
-                current_node = predecessors[current_node]
-            return list(reversed(path)), current_distance
+            walk_node = current_node
+            path_distance = 0
+            while walk_node:
+                path.append(walk_node)
+                if predecessors[walk_node] is not None:
+                    path_distance += graph[predecessors[walk_node]][walk_node]
+                walk_node = predecessors[walk_node]
+            return list(reversed(path)), path_distance
         
         # Check all neighboring nodes
         for neighbor, weight in graph[current_node].items():
