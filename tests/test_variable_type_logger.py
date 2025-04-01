@@ -2,18 +2,27 @@ import pytest
 import logging
 import io
 
-from src.variable_type_logger import log_variable_type
+from src.variable_type_logger import log_variable_type, logger
 
 @pytest.fixture
 def log_capture():
     # Create a StringIO object to capture log messages
     capture = io.StringIO()
     
-    # Configure logging to use the capture stream
-    logging.basicConfig(stream=capture, level=logging.INFO, 
-                        format='%(message)s')
+    # Create a handler that writes to the capture stream
+    handler = logging.StreamHandler(capture)
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter('%(message)s'))
     
-    return capture
+    # Add the handler to the logger
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
+    
+    # Yield the capture and then remove the handler
+    yield capture
+    
+    logger.removeHandler(handler)
+    capture.close()
 
 def test_log_variable_type_primitive_types(log_capture):
     # Test integer
@@ -21,8 +30,6 @@ def test_log_variable_type_primitive_types(log_capture):
     assert result == 'int'
     log_output = log_capture.getvalue()
     assert 'Variable type: int, Value: 42' in log_output
-
-    # Reset log capture
     log_capture.truncate(0)
     log_capture.seek(0)
 
@@ -31,8 +38,6 @@ def test_log_variable_type_primitive_types(log_capture):
     assert result == 'str'
     log_output = log_capture.getvalue()
     assert 'Variable type: str, Value: \'Hello\'' in log_output
-
-    # Reset log capture
     log_capture.truncate(0)
     log_capture.seek(0)
 
@@ -48,8 +53,6 @@ def test_log_variable_type_complex_types(log_capture):
     assert result == 'list'
     log_output = log_capture.getvalue()
     assert 'Variable type: list, Value: [1, 2, 3]' in log_output
-
-    # Reset log capture
     log_capture.truncate(0)
     log_capture.seek(0)
 
